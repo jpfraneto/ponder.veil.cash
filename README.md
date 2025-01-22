@@ -5,7 +5,7 @@ This is a [Ponder](https://ponder.sh/) indexer for the Veil privacy pools on Bas
 ![Veil Privacy Protocol](https://www.veil.cash/img/hero.svg)
 _[veil.cash](https://www.veil.cash) - A Privacy Protocol For Verified Users_
 
-It indexes events and maintains an up-to-datestate for the following pools:
+It indexes events and maintains an up-to-date state for the following pools:
 
 Public Pools:
 
