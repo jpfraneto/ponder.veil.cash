@@ -11,6 +11,10 @@ import {
 import { parseEther } from "viem";
 import { VeilPoolAbi } from "../abis/VeilPoolAbi";
 
+// Indexing functions that process contract events.
+
+// These functions write indexed data into the database.
+
 // Pool denominations
 const POOL_DENOMINATIONS = {
   "0x6c206B5389de4e5a23FdF13BF38104CE8Dd2eD5f": "0.005", // Public Pool 1
@@ -58,7 +62,7 @@ async function initializePool(
   });
 }
 
-ponder.on("VeilPool005:Deposit", async ({ event, context }) => {
+ponder.on("VeilDotCash:Deposit", async ({ event, context }) => {
   const { db } = context;
   const poolAddress = event.log.address;
   await initializePool(poolAddress, context);
@@ -88,7 +92,7 @@ ponder.on("VeilPool005:Deposit", async ({ event, context }) => {
   });
 });
 
-ponder.on("VeilPool005:Withdrawal", async ({ event, context }) => {
+ponder.on("VeilDotCash:Withdrawal", async ({ event, context }) => {
   const { db } = context;
   const poolAddress = event.log.address;
   await initializePool(poolAddress, context);
@@ -125,7 +129,7 @@ ponder.on("VeilPool005:Withdrawal", async ({ event, context }) => {
   }
 });
 
-ponder.on("VeilPool005:UpdateVerifiedDepositor", async ({ event, context }) => {
+ponder.on("VeilDotCash:UpdateVerifiedDepositor", async ({ event, context }) => {
   const { db } = context;
   const poolAddress = event.log.address;
 

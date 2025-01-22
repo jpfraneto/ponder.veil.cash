@@ -2,24 +2,19 @@
 import { createConfig } from "ponder";
 import { http } from "viem";
 
-// Import ABIs - assuming all pools share the same ABI
+// Import ABI - all pools share the same ABI
 import { VeilPoolAbi } from "./abis/VeilPoolAbi";
 
-// Contract addresses from environment variables
-const POOL_ADDRESSES = {
-  PublicPool1: process.env.DEPOSIT_PUBLIC_POOL_1_ADDRESS!, // 0.005 ETH
-  PublicPool2: process.env.DEPOSIT_PUBLIC_POOL_2_ADDRESS!, // 0.05 ETH
-  PrivatePool3: process.env.DEPOSIT_PRIVATE_POOL_3_ADDRESS!, // 0.01 ETH
-  PrivatePool4: process.env.DEPOSIT_PRIVATE_POOL_4_ADDRESS!, // 0.1 ETH
-  PrivatePool5: process.env.DEPOSIT_PRIVATE_POOL_5_ADDRESS!, // 1 ETH
-};
-
-// Ensure all required environment variables are present
-Object.entries(POOL_ADDRESSES).forEach(([name, address]) => {
-  if (!address) {
-    throw new Error(`Missing environment variable for ${name}`);
-  }
-});
+const PublicPool1 =
+  "0x6c206B5389de4e5a23FdF13BF38104CE8Dd2eD5f" as `0x${string}`; // 0.005 ETH
+const PublicPool2 =
+  "0xC53510D6F535Ba0943b1007f082Af3410fBeA4F7" as `0x${string}`; // 0.05 ETH
+const PrivatePool3 =
+  "0x844bB2917dD363Be5567f9587151c2aAa2E345D2" as `0x${string}`; // 0.01 ETH
+const PrivatePool4 =
+  "0xD3560eF60Dd06E27b699372c3da1b741c80B7D90" as `0x${string}`; // 0.1 ETH
+const PrivatePool5 =
+  "0x9cCdFf5f69d93F4Fcd6bE81FeB7f79649cb6319b" as `0x${string}`; // 1 ETH
 
 export default createConfig({
   networks: {
@@ -29,40 +24,65 @@ export default createConfig({
     },
   },
   contracts: {
-    // 0.005 ETH Pool
-    VeilPool005: {
+    VeilDotCash: {
       abi: VeilPoolAbi,
-      address: POOL_ADDRESSES.PublicPool1 as `0x${string}`,
-      network: "base",
-      startBlock: 24532656,
-    },
-    // 0.05 ETH Pool
-    VeilPool05: {
-      abi: VeilPoolAbi,
-      address: POOL_ADDRESSES.PublicPool2 as `0x${string}`,
-      network: "base",
-      startBlock: 24702141,
-    },
-    // 0.01 ETH Pool
-    VeilPool01: {
-      abi: VeilPoolAbi,
-      address: POOL_ADDRESSES.PrivatePool3 as `0x${string}`,
-      network: "base",
-      startBlock: 24532656,
-    },
-    // 0.1 ETH Pool
-    VeilPool1: {
-      abi: VeilPoolAbi,
-      address: POOL_ADDRESSES.PrivatePool4 as `0x${string}`,
-      network: "base",
-      startBlock: 24532655,
-    },
-    // 1 ETH Pool
-    VeilPool10: {
-      abi: VeilPoolAbi,
-      address: POOL_ADDRESSES.PrivatePool5 as `0x${string}`,
+      address: [
+        PublicPool1,
+        PublicPool2,
+        PrivatePool3,
+        PrivatePool4,
+        PrivatePool5,
+      ],
       network: "base",
       startBlock: 24532655,
     },
   },
 });
+
+// --------- OLD CONFIG ---------
+
+// export default createConfig({
+//   networks: {
+//     base: {
+//       chainId: 8453,
+//       transport: http(process.env.PONDER_RPC_URL_8453),
+//     },
+//   },
+//   contracts: {
+//     // 0.005 ETH Pool
+//     VeilPool005: {
+//       abi: VeilPoolAbi,
+//       address: POOL_ADDRESSES.PublicPool1 as `0x${string}`,
+//       network: "base",
+//       startBlock: 24532656,
+//     },
+//     // 0.05 ETH Pool
+//     VeilPool05: {
+//       abi: VeilPoolAbi,
+//       address: POOL_ADDRESSES.PublicPool2 as `0x${string}`,
+//       network: "base",
+//       startBlock: 24702141,
+//     },
+//     // 0.01 ETH Pool
+//     VeilPool01: {
+//       abi: VeilPoolAbi,
+//       address: POOL_ADDRESSES.PrivatePool3 as `0x${string}`,
+//       network: "base",
+//       startBlock: 24532656,
+//     },
+//     // 0.1 ETH Pool
+//     VeilPool1: {
+//       abi: VeilPoolAbi,
+//       address: POOL_ADDRESSES.PrivatePool4 as `0x${string}`,
+//       network: "base",
+//       startBlock:  ,
+//     },
+//     // 1 ETH Pool
+//     VeilPool10: {
+//       abi: VeilPoolAbi,
+//       address: POOL_ADDRESSES.PrivatePool5 as `0x${string}`,
+//       network: "base",
+//       startBlock: 24532655,
+//     },
+//   },
+// });
