@@ -3,20 +3,13 @@
  * @description Type-safe API routes for the Veil privacy pools
  */
 
-import { Context, ponder } from "ponder:registry";
+import { ponder } from "ponder:registry";
 import {
-  pool as PoolTable,
   deposit as DepositTable,
   withdrawal as WithdrawalTable,
-  commitment as CommitmentTable,
-  nullifierHash as NullifierHashTable,
-  merkleRoot as MerkleRootTable,
 } from "ponder:schema";
 import { eq, desc, and, gt, lt, sql } from "ponder";
-
-// Constants
-const DEFAULT_PAGE_SIZE = 20;
-const MAX_PAGE_SIZE = 100;
+import { serializeBigInt, getPaginationParams } from "../utils";
 
 // Pool denominations in ETH for reference
 const POOL_DENOMINATIONS = {
@@ -27,28 +20,9 @@ const POOL_DENOMINATIONS = {
   "0x9cCdFf5f69d93F4Fcd6bE81FeB7f79649cb6319b": "1", // Private Pool 5
 } as const;
 
-// Utility Functions
-const serializeBigInt = (obj: any): any => {
-  if (obj === null || obj === undefined) return obj;
-  if (typeof obj === "bigint") return obj.toString();
-  if (Array.isArray(obj)) return obj.map(serializeBigInt);
-  if (typeof obj === "object") {
-    return Object.fromEntries(
-      Object.entries(obj).map(([key, value]) => [key, serializeBigInt(value)])
-    );
-  }
-  return obj;
-};
-
-const getPaginationParams = (c: any) => {
-  const cursor = c.req.query("cursor") || null;
-  const limit = Math.min(
-    parseInt(c.req.query("limit") || DEFAULT_PAGE_SIZE.toString()),
-    MAX_PAGE_SIZE
-  );
-  const direction = c.req.query("direction") === "prev" ? "prev" : "next";
-  return { cursor, limit, direction };
-};
+ponder.get("/hello", (c) => {
+  return c.text("Veil: A Privacy Protocol For Verified Users");
+});
 
 // Pool Endpoints
 ponder.get("/pools", async (c) => {

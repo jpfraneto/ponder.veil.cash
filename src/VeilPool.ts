@@ -1,4 +1,3 @@
-import { eq } from "drizzle-orm";
 import { ponder } from "ponder:registry";
 import {
   pool,
@@ -31,9 +30,10 @@ async function initializePool(
 ): Promise<void> {
   const { db, client } = context;
 
-  // Check if pool already exists
   const existingPool = await db.find(pool, { id: poolAddress });
-  if (existingPool) return;
+  if (existingPool) {
+    return;
+  }
 
   const denomination = parseEther(
     POOL_DENOMINATIONS[poolAddress as keyof typeof POOL_DENOMINATIONS]
@@ -65,9 +65,9 @@ async function initializePool(
 ponder.on("VeilDotCash:Deposit", async ({ event, context }) => {
   const { db } = context;
   const poolAddress = event.log.address;
+
   await initializePool(poolAddress, context);
 
-  // Insert deposit
   await db.insert(deposit).values({
     id: event.args.commitment,
     poolId: poolAddress,
@@ -77,13 +77,11 @@ ponder.on("VeilDotCash:Deposit", async ({ event, context }) => {
     isSpent: false,
   });
 
-  // Update pool stats
   await db.update(pool, { id: poolAddress }).set((pool) => ({
     totalDeposits: pool.totalDeposits + 1,
     lastLeafIndex: Number(event.args.leafIndex),
   }));
 
-  // Insert commitment
   await db.insert(commitment).values({
     hash: event.args.commitment,
     poolId: poolAddress,
@@ -95,9 +93,9 @@ ponder.on("VeilDotCash:Deposit", async ({ event, context }) => {
 ponder.on("VeilDotCash:Withdrawal", async ({ event, context }) => {
   const { db } = context;
   const poolAddress = event.log.address;
+
   await initializePool(poolAddress, context);
 
-  // Insert withdrawal
   await db.insert(withdrawal).values({
     id: event.args.nullifierHash,
     poolId: poolAddress,
@@ -107,19 +105,16 @@ ponder.on("VeilDotCash:Withdrawal", async ({ event, context }) => {
     timestamp: event.args.timestamp,
   });
 
-  // Insert nullifier hash
   await db.insert(nullifierHash).values({
     hash: event.args.nullifierHash,
     poolId: poolAddress,
     timestamp: event.args.timestamp,
   });
 
-  // Update pool stats
   await db.update(pool, { id: poolAddress }).set((pool) => ({
     totalWithdrawals: pool.totalWithdrawals + 1,
   }));
 
-  // Find and update deposit
   const depositToSpend = await db.find(deposit, {
     id: event.args.nullifierHash,
   });
@@ -137,3 +132,5 @@ ponder.on("VeilDotCash:UpdateVerifiedDepositor", async ({ event, context }) => {
     .update(pool, { id: poolAddress })
     .set({ validatorContract: event.args.newVeilVerifier });
 });
+
+// add more functions here when needed
